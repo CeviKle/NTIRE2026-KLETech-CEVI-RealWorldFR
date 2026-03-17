@@ -49,7 +49,7 @@ LQ → Stage 1 (StyleGANv2) → Stage 2 (DiffBIR) → [SA-FGRC] → Stage 3 (DIN
 | MUSIQ ↑ | 77.53 | 77.30 | -0.23 |
 | NIQE ↓ | 4.01 | **3.57** | **-0.44** |
 | MANIQA ↑ | 0.7285 | 0.6922 | -0.0363 |
-| Identity sim | — | 0.9832 | excellent |
+
 
 ### Method
 
