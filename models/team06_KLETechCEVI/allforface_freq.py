@@ -35,13 +35,15 @@ def main(model_dir, input_path, output_path, device):
     sd_path            = 'v2-1_512-ema-pruned.ckpt'
     control_path       = 'v2.pth'
     caption_path       = 'ram_plus_swin_large_14m.pth'
-    text_encoder_type  = 'bert-base-uncased'
     bisenet_path       = os.path.join(model_dir, '79999_iter.pth')
     wavelet_checkpoint = os.path.join(model_dir, 'semantic_best.pth')
 
     set_seed(seed)
     if torch.cuda.is_available():
-        torch.cuda.empty_cache()
+        try:
+            torch.cuda.empty_cache()
+        except:
+            pass
 
     os.makedirs(output_path, exist_ok=True)
 
@@ -56,18 +58,25 @@ def main(model_dir, input_path, output_path, device):
     if test_img_num == 0:
         raise FileNotFoundError('No input image/folder found.\n')
 
+    # Stage 1 — Fidelity
     fidelity_model = FidelityModel(
         out_size=512, num_style_feat=512, channel_multiplier=1,
         decoder_load_path=None, fix_decoder=True, num_mlp=8,
         input_is_latent=True, different_w=True, narrow=1, sft_half=False)
-    fidelity_model.load_state_dict(torch.load(os.path.join(model_dir, fidelity_path)))
+    fidelity_model.load_state_dict(
+        torch.load(os.path.join(model_dir, fidelity_path), map_location=device)
+    )
     fidelity_model.eval().to(device)
     print("Loaded Stage 1: Fidelity model")
 
-    enhance_model = torch.load(os.path.join(model_dir, natural_path))
+    # Stage 3 — Naturalness
+    enhance_model = torch.load(
+        os.path.join(model_dir, natural_path), map_location=device
+    )
     enhance_model.eval().to(device)
     print("Loaded Stage 3: Naturalness model")
 
+    # Stage 2 — ControlNet + Diffusion
     config_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         '..', 'team01_AllForFace', 'ldm', 'cldm.yaml'
@@ -84,15 +93,18 @@ def main(model_dir, input_path, output_path, device):
 
     diffusion = Diffusion().to(device)
 
+    # Use bert-base-uncased directly (standard HuggingFace model name)
     captioner = RAMCaptioner(
         pretrained_path=os.path.join(model_dir, caption_path),
-        text_encoder_type=os.path.join(model_dir, text_encoder_type),
+        text_encoder_type='bert-base-uncased',
         device=device)
     print("Loaded Stage 2: Diffusion model")
 
+    # SA-FGRC — Wavelet Refiner
     wavelet_refiner = SemanticWaveletRefiner(bisenet_path=bisenet_path).to(device)
     if os.path.exists(wavelet_checkpoint):
-        wavelet_refiner.load_state_dict(torch.load(wavelet_checkpoint, map_location=device))
+        wavelet_refiner.load_state_dict(
+            torch.load(wavelet_checkpoint, map_location=device))
         print(f"Loaded Wavelet Refiner from {wavelet_checkpoint}")
     else:
         print(f"Wavelet checkpoint not found at {wavelet_checkpoint}")
@@ -104,6 +116,10 @@ def main(model_dir, input_path, output_path, device):
         print(f'[{i+1}/{test_img_num}] Processing: {img_name}')
 
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+        if img is None:
+            print(f"Skipping invalid image: {img_path}")
+            continue
+
         img = cv2.resize(img, (512, 512), interpolation=cv2.INTER_LINEAR)
         img = img2tensor(img / 255., bgr2rgb=True, float32=True)
         normalize(img, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
