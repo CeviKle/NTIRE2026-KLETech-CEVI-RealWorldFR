@@ -153,17 +153,6 @@ NTIRE2026-KLETech-CEVI-RealWorldFR/
 - Ramesh Ashok Tabib
 - Uma Mudenagudi
 
-### Citation
-
-```bibtex
-@inproceedings{ntiface26face,
-  title={NTIRE 2026 challenge on real-world face restoration: Methods and results},
-  author={Wang, Jingkai and others},
-  booktitle={CVPRW},
-  year={2026}
-}
-```
-
 ### Acknowledgements
 
 This work builds on [AllForFace](https://github.com/zhengchen1999/NTIRE2025_RealWorld_Face_Restoration), [DiffBIR](https://github.com/XPixelGroup/DiffBIR), [BiSeNet](https://github.com/zllrunning/face-parsing.PyTorch), [IQA-PyTorch](https://github.com/chaofengc/IQA-PyTorch), [VQFR](https://github.com/TencentARC/VQFR), and [AdaFace](https://github.com/mk-minchul/AdaFace).
