@@ -1,0 +1,3 @@
+[submodule "models/team06_KLETechCEVI/face-parsing.PyTorch"]
+	path = models/team06_KLETechCEVI/face-parsing.PyTorch
+	url = https://github.com/zllrunning/face-parsing.PyTorch.git
