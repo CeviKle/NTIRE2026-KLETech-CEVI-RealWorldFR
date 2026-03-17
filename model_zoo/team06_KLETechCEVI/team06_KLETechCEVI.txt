@@ -1,0 +1,12 @@
+Download all weights from Google Drive:
+https://drive.google.com/drive/folders/1T5agRpabCJyejysm52dgUtxPFbdNukM4?usp=drive_link
+
+Place in ./model_zoo/team06_KLETechCEVI/:
+- semantic_best.pth
+- fidelity_model.pth
+- naturalness_model.pt
+- v2.pth
+- v2-1_512-ema-pruned.ckpt
+- ram_plus_swin_large_14m.pth
+- bert-base-uncased/
+- 79999_iter.pth
