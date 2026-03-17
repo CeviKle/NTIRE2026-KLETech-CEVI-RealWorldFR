@@ -20,8 +20,7 @@ class BiSeNetParser(nn.Module):
 
     def __init__(self, bisenet_path):
         super().__init__()
-        # Use face-parsing.PyTorch cloned inside team06 folder
-        repo_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'face-parsing.PyTorch')
+        repo_dir = os.path.dirname(os.path.abspath(__file__))
         if repo_dir not in sys.path:
             sys.path.insert(0, repo_dir)
 
