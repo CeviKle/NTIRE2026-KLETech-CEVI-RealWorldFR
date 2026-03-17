@@ -145,11 +145,11 @@ NTIRE2026-KLETech-CEVI-RealWorldFR/
 
 **KLETech-CEVI** · KLE Technological University, Hubballi, India
 
-- Nikhil Akalwadi
 - Sujith Roy V
 - Claudia Jesuraj
 - Vikas B
 - Spoorthi LC
+- Nikhil Akalwadi
 - Ramesh Ashok Tabib
 - Uma Mudenagudi
 
